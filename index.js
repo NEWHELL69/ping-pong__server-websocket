@@ -9,7 +9,8 @@ let port = 3000;
 let app = express();
 
 // Apply expressWs
-expressWs(app);
+let aWss = expressWs(app).getWss('/');
+
 
 // Get the route / 
 app.get('/', (req, res) => {
@@ -24,10 +25,18 @@ app.ws('/ws', async function(ws, req) {
         console.log(msg);
         // Start listening for messages
         // Send back some data
-        ws.send(JSON.stringify({
-            "append" : true,
-            "returnText" : "I am using WebSockets!"
-        }));
+        // ws.send(JSON.stringify({
+        //     "append" : true,
+        //     "returnText" : "I am using WebSockets!"
+        // }));
+        // let a = "";
+        aWss.clients.forEach(function (client) {
+            // a += " "+msg
+            client.send(msg);
+          });
+
+        // ws.send(aWss.clients.size);
+        // ws.send(msg);
     });
 });
 

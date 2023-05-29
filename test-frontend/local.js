@@ -70,7 +70,8 @@
 //     });
 // });
 
-const webSocket = new WebSocket("ws://localhost:3000/ws");
+// const webSocket = new WebSocket("ws://localhost:3000/ws");
+const webSocket = new WebSocket("ws://192.168.1.102:3000/ws");
 
 webSocket.addEventListener("open", () => {
   console.log("WebSocket connection established.");
