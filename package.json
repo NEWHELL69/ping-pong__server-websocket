@@ -1,7 +1,7 @@
 {
   "name": "ping-pong__server-websocket",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server for ping-pong game.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +21,5 @@
     "express-ws": "^5.0.2",
     "path": "^0.12.7",
     "url": "^0.11.0"
-  },
-  "type": "module"
+  }
 }

@@ -1,43 +1,89 @@
-// Import express, expressWs, and http
-import express from 'express'
-import expressWs from 'express-ws'
+// Import express and expressWs
+const express = require('express');
+const expressWs = require('express-ws')
+
+// Initialize express and expressWs
+const app = express();
+const wss = expressWs(app);
 
 // Our port
-let port = 3000;
+const port = 3000; 
 
-// App and server
-let app = express();
+// players and game
+let player1 = null;
+let player2 = null;
+let game = null;
 
-// Apply expressWs
-let aWss = expressWs(app).getWss('/');
-
+app.use(express.static('./test-frontend'));
 
 // Get the route / 
 app.get('/', (req, res) => {
     res.status(200).send("Welcome to our app");
 });
 
-// This lets the server pick up the '/ws' WebSocket route
-app.ws('/ws', async function(ws, req) {
-    // After which we wait for a message and respond to it
-    ws.on('message', async function(msg) {
-        // If a message occurs, we'll console log it on the server
-        console.log(msg);
-        // Start listening for messages
-        // Send back some data
-        // ws.send(JSON.stringify({
-        //     "append" : true,
-        //     "returnText" : "I am using WebSockets!"
-        // }));
-        // let a = "";
-        aWss.clients.forEach(function (client) {
-            // a += " "+msg
-            client.send(msg);
-          });
+app.ws('/game', function(ws, req) {
+    if(!game) {
+        game = ws;
 
-        // ws.send(aWss.clients.size);
-        // ws.send(msg);
-    });
+        console.log("game connected.");
+
+        game.on('message', (msg) => {
+            console.log('game -> ' + msg);
+        })
+
+        game.on('close', (code) => {
+            console.log("game socket closed, code -> " + code);
+            game = null;
+        })
+
+        ws.on('error', () => {
+            console.log(`game error`);
+        })
+    }
 });
 
-app.listen(port)
+app.ws('/player', function(ws, req) {
+    if(!player1 || !player2) {
+        let player = null;
+
+        if(!player1){
+            player = '1';
+            player1 = ws;
+
+            console.log("player 1 connected.");
+        } else {
+            player = '2';
+            player2 = ws;
+
+            console.log("player 2 connected.");
+        }
+
+        ws.on("message", (data) => {
+            let msg = JSON.parse(data);
+
+            if(!game){
+                console.log('game not connected');
+            } else {
+                game.send(JSON.stringify(
+                    { 
+                        "player" : player,
+                        "direction": msg.direction,
+                        "pressed": msg.pressed
+                    }
+                ));
+            }
+        })
+
+        ws.on('close', (code) => {
+            console.log(`player ${player} socket closed, code -> ` + code);
+            player1 = null;
+            player2 = null;
+        })
+
+        ws.on('error', (code) => {
+            console.log(`player ${player} hello`);
+        })
+    }
+});
+
+app.listen(port);
