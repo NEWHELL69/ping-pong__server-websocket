@@ -81,7 +81,7 @@ app.ws('/player', function(ws, req) {
         })
 
         ws.on('error', (code) => {
-            console.log(`player ${player} hello`);
+            console.log(`player ${player} error`);
         })
     }
 });
