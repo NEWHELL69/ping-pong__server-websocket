@@ -47,12 +47,12 @@ app.ws('/player', function(ws, req) {
         let player = null;
 
         if(!player1){
-            player = '1';
+            player = false;
             player1 = ws;
 
             console.log("player 1 connected.");
         } else {
-            player = '2';
+            player = true;
             player2 = ws;
 
             console.log("player 2 connected.");
@@ -60,6 +60,8 @@ app.ws('/player', function(ws, req) {
 
         ws.on("message", (data) => {
             let msg = JSON.parse(data);
+
+            console.log(msg)
 
             if(!game){
                 console.log('game not connected');

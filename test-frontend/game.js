@@ -23,7 +23,7 @@
 //                 console.log('game connected');
 //             }
 
-//             // This will fire when the server sends the user a message
+//             // This will fire when the server sends this a message
 //             socket.onmessage = (data) => {
 //                 console.log(data.data);
 //             }
